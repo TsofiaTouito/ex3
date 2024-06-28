@@ -1,7 +1,9 @@
 #include "StrList.h"
 #include <stdio.h>
 #include <string.h>
-//#include <stdio.h>
+
+
+// Node & List Data Structures
 typedef struct Node {
     char* data;
     struct Node* next;
@@ -11,6 +13,11 @@ typedef struct _StrList {
     Node* head;
     int size;
 } StrList;
+
+
+//--------------------------------------------
+// Node & List memory allocation
+//--------------------------------------------
 
 static char* my_strdup(const char* s) {
     char* d = (char*)malloc(strlen(s) + 1);
@@ -32,19 +39,11 @@ StrList* StrList_alloc() {
     list->size = 0;
     return list;
 }
-/** 
-void StrList_free(StrList* list) {
-    if (!list) return;
-    Node* current = list->head;
-    while (current) {
-        Node* next = current->next;
-        free(current->data);
-        free(current);
-        current = next;
-    }
-    free(list);
-}
-*/
+
+//--------------------------------------------
+// Node & List free memory 
+//--------------------------------------------
+
 void Node_free(Node *node) {
   if (node != NULL) {
     free(node->data);
@@ -63,6 +62,10 @@ void StrList_free(StrList *list) {
   free(list);
 }
 
+//--------------------------------------------
+// Node & List implementation 
+//--------------------------------------------
+
 size_t StrList_size(const StrList* list) {
     return list->size;
 }
@@ -76,49 +79,38 @@ void StrList_insertLast(StrList* list, const char* data) {
         while (temp->next) {
             temp = temp->next;
         }
-        temp->next = newNode;
+        temp->next = newNode; // curr is the last node we found and add tmp after curr
     }
     list->size++;
 }
 
 void StrList_insertAt(StrList* list, const char* data, int index) {
-    if (!list || index < 0 || index > list->size) return;
+    if (!list || index < 0 || index > list->size) return; // Check for valid list and index
     if (index == list->size) {
-        StrList_insertLast(list, data);
+        StrList_insertLast(list, data); // Insert at the end
         return;
     }
-    Node* newNode = createNode(data);
-    if (index == 0) {
-        newNode->next = list->head;
-        list->head = newNode;
+    Node* newNode = createNode(data); // Create a new node with the given data
+    if (index == 0) { // If index is at the beginning
+        newNode->next = list->head; 
+        list->head = newNode; // New node becomes the new head
     } else {
         Node* current = list->head;
-        for (int i = 0; i < index - 1; i++) {
+        for (int i = 0; i < index - 1; i++) { // Traverse the list to find the insertion point
             current = current->next;
         }
         newNode->next = current->next;
-        current->next = newNode;
+        current->next = newNode;  
     }
-    list->size++;
+    list->size++; // Increment the size of the list
 }
-/** 
-void StrList_print(const StrList* list) {
-    Node* temp = list->head;
-    while (temp) {
-        printf("%s ", temp->data);
-        temp = temp->next;
-    }
-    if(temp!=NULL){
-		printf("%s",temp->data);
-	}
-    printf("\n");
-}
-*/
+
+
 void StrList_print(const StrList* StrList){
     if(StrList->head!= NULL){
     Node* p = StrList->head;
-	while(p->next!=NULL) {
-        printf("%s ",p->data);
+	while(p->next!=NULL) { // Traverse the list until the second last node
+        printf("%s ",p->data);// Print the current node's data followed by a space
 		p = p->next;
 	}
 	if(p!=NULL){
@@ -131,7 +123,7 @@ void StrList_print(const StrList* StrList){
 void StrList_printAt(const StrList* list, int index) {
     if (index >= list->size) return;
     Node* temp = list->head;
-    for (int i = 0; i < index; i++) {
+    for (int i = 0; i < index; i++) {/ Traverse the list up to the given index
         temp = temp->next;
     }
     printf("%s\n",temp->data);
@@ -187,26 +179,6 @@ void StrList_remove(StrList* list, const char* data){//hadar
 
 
 
-/**void StrList_remove(StrList* list, const char* data) {
-    Node* temp = list->head;
-    Node* prev = NULL;
-    while (temp) {
-        if (strcmp(temp->data, data) == 0) {
-            if (prev) {
-                prev->next = temp->next;
-            } else {
-                list->head = temp->next;
-            }
-            free(temp->data);
-            free(temp);
-            list->size--;
-            temp = (prev) ? prev->next : list->head;
-        } else {
-            prev = temp;
-            temp = temp->next;
-        }
-    }
-}*/
  
 void StrList_removeAt(StrList* list, int index) {
     if (index >= list->size) return;
@@ -225,27 +197,7 @@ void StrList_removeAt(StrList* list, int index) {
     free(temp);
     list->size--;
 }
-/** 
-void StrList_removeAt(StrList* StrList, int index){
-    if (index >= StrList->size) return;
-  	Node* p = StrList->head;
-	Node* prev = NULL;
-	for (int i = 0; i<index; i++){
-		if(i==index){
-			if (prev == NULL) {
-					StrList->head = p->next;
-				}
-			else {
-				prev->next = p->next;
-				}
-				free(p->data);
-				free(p);
-		}
-		prev = p;
-		p = p->next;
-	}
-}
-*/
+
 void StrList_reverse(StrList* list) {
     Node* prev = NULL;
     Node* current = list->head;
